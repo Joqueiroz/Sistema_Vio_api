@@ -1,13 +1,13 @@
 {
-  "name": "dev",
+  "name": "vio",
   "version": "1.0.0",
-  "description": "Criando um Crud de usuarios",
+  "description": "criando um crud de usuarios",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js"
   },
-  "author": "Miguel",
+  "author": "vinicius",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.7",

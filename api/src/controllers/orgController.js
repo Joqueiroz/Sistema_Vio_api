@@ -1,74 +1,101 @@
-let orgs = []; 
-let nextId = 1;
+let orgs = [];
+let id_organizador = 0;
+
+const connect = require("../db/connect");
 
 module.exports = class orgController {
-  static async createOrganizador(req, res) {
-    const {telefone, email, password, name } = req.body;
+  static async createOrg(req, res) {
+    const { nome, email, senha, telefone } = req.body;
 
-    if (!telefone || !email || !password || !name) {
-      return res.status(400).json({ error: "Todos os campos devem ser preenchidos" });
+    if (!nome || !email || !senha || !telefone) {
+      return res
+        .status(400)
+        .json({ error: "Todos os campos devem ser preenchidos" });
     } else if (isNaN(telefone) || telefone.length !== 11) {
-      return res.status(400).json({ error: "Telefone inválido. Deve conter exatamente 11 dígitos numéricos" });
+      return res.status(400).json({
+        error: "Telefone inválido. Deve conter exatamente 11 dígitos numéricos",
+      });
     } else if (!email.includes("@")) {
       return res.status(400).json({ error: "Email inválido. Deve conter @" });
-    } 
-    
-      
-
-    // Verifica se já existe um usuário com o mesmo email
-    const existingOrganizador = orgs.find(org => org.email === email);
-    if (existingOrganizador) {
-      return res.status(400).json({ error: "Email já cadastrado" });
     }
+    else {
 
-    // Cria e adiciona novo organizador
-    const newOrganizador = {id: nextId++,telefone, email, password, name };
-    orgs.push(newOrganizador);
+      // Construção da query INSERT
 
-    return res.status(201).json({ message: "Usuário criado com sucesso", org: newOrganizador });
-  }
+      const query = `INSERT INTO organizador (nome,email,telefone,senha) VALUES(
+      '${nome}',
+      '${email}',
+      '${telefone}',
+      '${senha}')`;
 
+      // Executando a query criada
 
-  static async getAllOrganizadores(req, res) {
+      try {
+        connect.query(query, function (err) {
+          if (err) {
+            console.log(err);
+            console.log(err.code);
+            if (err.code === "ER_DUP_ENTRY") {
+              return res
+                .status(400)
+                .json({ error: "O email já está vinculado a outro usuário" });
+            } // if
+            else {
+              return res
+                .status(500)
+                .json({ error: "Erro Interno do Servidor" });
+            } // else
+          } // if
+          else {
+            return res
+              .status(201)
+              .json({ message: "Usuário Criado com Sucesso" });
+          } // else
+        }); // connect
+      } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro Interno de Servidor" });
+      } // catch
+    } // else
+  } // CreateUser
+
+  static async getAllOrgs(req, res) {
     return res.status(200).json({ message: "Obtendo todos os usuários", orgs });
   }
 
-
-  static async updateOrganizador(req, res) {
-    // Desestrutura e recupera os dados enviados via corpo da requisição
-    const {id, telefone, email, password, name } = req.body;
-
-    // Validar se todos os campos foram preenchidos
-    if(!id || !telefone || !email || !password || !name) {
-        return res.status(400).json({error:"Todos os campos devem ser preenchidos"});
+  static async updateOrg(req, res) {
+    // desestrutura e recupera os dados enviados via corpo da requisição
+    const orgId = req.params.id_organizador;
+    const { nome, email, senha, telefone } = req.body;
+    if (!nome || !email || !senha || !telefone) {
+      // valida se todos os campos foram preenchidos
+      return res
+        .status(400)
+        .json({ error: "Todos os campos devem ser preenchidos" });
     }
-    //Procurar o indice do user no Array 'orgs' pelo id
-    const orgIndex = orgs.findIndex(org => org.id == id)
-    //Se o usuário não for encontrado userIndex equivale a -1
-    if(orgIndex === -1){
-        return res.status(400).json({error: "Usuário não encontrado"});
+    // procura indice do user no array 'users' pelo cpf
+    const orgIndex = orgs.findIndex((org) => org.id_organizador == orgId);
+    // se não for encontrado o 'userindex' equivale a -1
+    if (orgIndex == -1) {
+      return res.status(400).json({ error: "Usuário não encontrado" });
     }
-
-    //Atualiza os dados do usuário no Array 'users'
-    orgs[orgIndex] = {id, telefone, email, password, name }
-    
-    return res.status(200).json({message: "Usuário atualizado", org:orgs[orgIndex]})
+    // atualiza os dados do usuario na array 'users'
+    orgs[orgIndex] = { nome, email, senha, telefone };
+    return res
+      .status(200)
+      .json({ message: "Usuário atualizado", org: orgs[orgIndex] });
   }
 
-  static async deleteOrganizador(req, res) {
-    // Obtem o parametro 'id' da requisição, que é o id do org a ser deletado
-    const orgId = req.params.id
-
-    //Procurar o indice do user no Array 'users' pelo cpf
-    const orgIndex = orgs.findIndex((org) => org.id == orgId)
-    //Se o usuário não for encontrado userIndex equivale a -1
-    if(orgIndex == -1){
-        return res.status(400).json({error: "Usuário não encontrado"});
+  static async deleteOrg(req, res) {
+    const orgId = req.params.id_organizador;
+    const orgIndex = orgs.findIndex((org) => org.id_organizador == orgId);
+    // se não for encontrado o 'userindex' equivale a -1
+    if (orgIndex == -1) {
+      return res.status(400).json({ error: "Usuário não encontrado" });
     }
-
-    // Removendo o usuário do Array 'orgs'
-    orgs.splice(orgIndex,1);
-    return res.status(200).json({message: "Usuário Apagado!", orgs})
-   
+    // removendo usuário da array 'users'
+    orgs.splice(orgIndex, 1); // começa no indice 'userIndex', e apaga somente '1'
+    return res.status(200).json({ message: "Usuário apagado", orgs });
+  }
 };
-}
+

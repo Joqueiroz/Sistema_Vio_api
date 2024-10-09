@@ -1,60 +1,58 @@
-//Acessa o objeto "Documento" que representa a pagina html
-
-//Seleciona o elemento com o id indicado do forumalario
+// acessa o objeto 'document' que representa a pagina html
 
 document
-  .getElementById("formulario-registro")
-
-  //Adiciona o ouvinte de evento (submit) para capturar o envio do formulario
+  .getElementById("formulario-registro") //  seleciona o elemento com o id indicado no <form> 'formulario-registro'
   .addEventListener("submit", function (event) {
-    //Previne o comportamento padrao do formulario, ou seja, impede que ele seja enviado e recarregue a pagona
-    event.preventDefault();
-
-    //Captura os valores dos campos do formularios
-    const name = document.getElementById("nome").value;
+    // adiciona o ouvinte do evento 'submit'
+    event.preventDefault(); // previne o comportamento padrão do formulário, ou seja, impede que ele seja enviado e recarregue a página
+    const name = document.getElementById("nome").value; // capturar os valores dos campos do formulário pelo id
     const cpf = document.getElementById("cpf").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("senha").value;
 
-    //Requisição HTTP para o endpoint de cadastro de usuario
+    // requisição http para o endpoint de cadastro de usuário
+
     fetch("http://localhost:5000/api/v1/user", {
-      //Realiza uma chamada http para o servidor(a rota definida)
+      // realiza uma chamada HTTP para o servidor (a rota definida)
       method: "POST",
       headers: {
-        //A requisição será em formato json
+        // a requisição será em formato JSON
         "Content-Type": "application/json",
       },
-      //Transforma os dados do formulario de uma string json para serem enviados no corpo da req
-      body: JSON.stringify({ name, cpf, email, password }),
+      // transforma os dados do formulário em uma string json para serem enviados no corpo da requisição
+      body: JSON.stringify({ name, cpf, password, email }),
     })
       .then((response) => {
-        //Tratamento da resposta do servidor / API
+        // tratamento da resposta do servidor / api
         if (response.ok) {
-          //verifica se a resposta foi bem sucedida (status 2xx(duzentos e alguma coisa))
+          // verifica se a resposta foi bem-sucedida (status: 20*)
           return response.json();
-        }
-        //Convertendo o erro em formato JSON
+        } // --- fechamento 'response.ok'
+        // convertendo o erro em formato JSON
         return response.json().then((err) => {
-          //Mensagem retornada do servidor acessada pela chave "error"
+          // mensagem retornada do servidor, acessa pela chave 'error'
           throw new Error(err.error);
-        });
-      }) //Fechamento da then(response)
+        }); // --- fechamento 'response error'
+      }) // --- fechamento 'response'
       .then((data) => {
-        //executa a resposta de sucesso - retorna ao usuario final
+        // executa a resposta de sucesso  - retorna ao usuario final
+        // exibe alerta com o nome do usuario com o nome que acabou de ser cadastrado (front)
+        // alert("Usuário cadastrado com sucesso: " + data.user.name);
 
-        //Exibe um alerta para o usuario final (front) com o nome que acabou de ser cadastrado
-        alert("Usuário cadastrado com sucesso!" + data.user.name);
-        //Exibe o log no terminal
-        console.log("Usuario criado: ", data.user);
+        alert(data.message);
 
-        //Reseta os campos do formulario apos o sucesso do cadastro
-        document.getElementById("formulario-registro").reset();
-      })
+        // alert("Usuário Cadastrado: " + data.user);
+
+        // exibe o log no terminal
+        console.log("Usuário Cadastrado: " + data.user);
+
+        // limpa os campos do formulario, após o sucesso do cadastro
+        document.getElementById("formulario-registro").reset()
+      }) // --- fechamento 'data'
+      //captura qualquer erro que ocorra durante o processo de requisição/ resposta
       .catch((error) => {
-        //Captura qualquer erro que ocorra durante o processo de requisição / resposta
-
-        //Exibe alerta (front) com o erro processado
-        alert("Erro no cadastro " + error.message);
+        // exibe alerta no (front) com erro processado
+        alert("Erro no cadastro: " + error.message);
         console.error("Erro:", error.message);
-      });
+      }); // --- fechamento 'catch(error)'
   });

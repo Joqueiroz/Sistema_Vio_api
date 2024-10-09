@@ -1,5 +1,4 @@
-/* Estilos globais aplicados a todos os elementos da página */
-* {
+Estilos globais aplicados a todos os elementos da página * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
@@ -114,4 +113,3 @@ footer {
   position: absolute; /* Posiciona o rodapé de forma absoluta */
   bottom: 0; /* Posiciona o rodapé na parte inferior da página */
 }
-
