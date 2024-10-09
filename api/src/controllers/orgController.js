@@ -27,7 +27,8 @@ module.exports = class orgController {
 
     return res.status(201).json({ message: "Usuário criado com sucesso", org: newOrganizador });
   }
-  
+
+
   static async getAllOrganizadores(req, res) {
     return res.status(200).json({ message: "Obtendo todos os usuários", orgs });
   }
