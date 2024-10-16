@@ -1,6 +1,3 @@
-let orgs = [];
-let id_organizador = 0;
-
 const connect = require("../db/connect");
 
 module.exports = class orgController {
@@ -17,9 +14,7 @@ module.exports = class orgController {
       });
     } else if (!email.includes("@")) {
       return res.status(400).json({ error: "Email inválido. Deve conter @" });
-    }
-    else {
-
+    } else {
       // Construção da query INSERT
 
       const query = `INSERT INTO organizador (nome,email,telefone,senha) VALUES(
@@ -60,42 +55,76 @@ module.exports = class orgController {
   } // CreateUser
 
   static async getAllOrgs(req, res) {
-    return res.status(200).json({ message: "Obtendo todos os usuários", orgs });
-  }
+    const query = `SELECT * FROM organizador`;
+
+    try {
+      connect.query(query, function (err, results) {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Erro Interno do Servidor" });
+        }
+        return res
+          .status(200)
+          .json({ message: "Lista de Organizador", orgs: results });
+      });
+    } catch (error) {
+      console.error("Erro ao executar consulta:", error);
+      res.status(500).json({ error: "Erro Interno de Servidor" });
+    } // catch (error)
+  } //getAllOrgrs
 
   static async updateOrg(req, res) {
-    // desestrutura e recupera os dados enviados via corpo da requisição
-    const orgId = req.params.id_organizador;
-    const { nome, email, senha, telefone } = req.body;
+    const { id, nome, email, senha, telefone } = req.body;
     if (!nome || !email || !senha || !telefone) {
-      // valida se todos os campos foram preenchidos
       return res
         .status(400)
         .json({ error: "Todos os campos devem ser preenchidos" });
     }
-    // procura indice do user no array 'users' pelo cpf
-    const orgIndex = orgs.findIndex((org) => org.id_organizador == orgId);
-    // se não for encontrado o 'userindex' equivale a -1
-    if (orgIndex == -1) {
-      return res.status(400).json({ error: "Usuário não encontrado" });
+    const query = `UPDATE organizador SET nome=?, email=?, senha=?, telefone=? WHERE id_organizador=?`;
+    const values = [nome, email, senha, telefone, id];
+    try {
+      connect.query(query, values, function (err, results) {
+        if (err) {
+          if (err.code === "ER_DUP_ENTRY") {
+            return res
+              .status(400)
+              .json({ error: "Email já Cadastrado, por outro organizador" });
+          } else {
+            console.error(err);
+            return res.status(500).json({ error: "Erro Interno do Servidor" });
+          }
+        }
+        if (results.affectedRows === 0) {
+          return res.status(404).json({ error: "Organizador não Encontrado" });
+        }
+        return res
+          .status(200)
+          .json({ message: "Organizador atualizado com Sucesso" });
+      });
+    } catch (error) {
+      console.error("Erro ao executar consulta: ", error);
+      return res.status(500).json({ error: "Erro Interno do Servidor" });
     }
-    // atualiza os dados do usuario na array 'users'
-    orgs[orgIndex] = { nome, email, senha, telefone };
-    return res
-      .status(200)
-      .json({ message: "Usuário atualizado", org: orgs[orgIndex] });
   }
 
   static async deleteOrg(req, res) {
-    const orgId = req.params.id_organizador;
-    const orgIndex = orgs.findIndex((org) => org.id_organizador == orgId);
-    // se não for encontrado o 'userindex' equivale a -1
-    if (orgIndex == -1) {
-      return res.status(400).json({ error: "Usuário não encontrado" });
+    const organizadorId = req.params.id_organizador;
+    const query = `DELETE FROM organizador WHERE id_organizador = ?`;
+    const values = [organizadorId];
+    try {
+      connect.query(query, values, function (err, results) {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Erro Interno do Servidor" });
+        }
+        if(results.affectedRows === 0){
+          return res.status(404).json({error:"Organizador não Encontrado"})
+        }
+        return res.status(200).json({message:"Organizador Excluido com Sucesso"})
+      });
+    } catch (error) {
+      console.error(error)
+      return res.status(500).json({error: "Erro Interno do Servidor"})
     }
-    // removendo usuário da array 'users'
-    orgs.splice(orgIndex, 1); // começa no indice 'userIndex', e apaga somente '1'
-    return res.status(200).json({ message: "Usuário apagado", orgs });
   }
 };
-

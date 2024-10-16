@@ -1,58 +1,61 @@
-// acessa o objeto 'document' que representa a pagina html
+//Acessa o objeto "Documento" que representa a pagina html
+
+//Seleciona o elemento com o id indicado do forumalario
 
 document
-  .getElementById("formulario-registro") //  seleciona o elemento com o id indicado no <form> 'formulario-registro'
+  .getElementById("formulario-registro")
+
+  //Adiciona o ouvinte de evento (submit) para capturar o envio do formulario
   .addEventListener("submit", function (event) {
-    // adiciona o ouvinte do evento 'submit'
-    event.preventDefault(); // previne o comportamento padrão do formulário, ou seja, impede que ele seja enviado e recarregue a página
-    const name = document.getElementById("nome").value; // capturar os valores dos campos do formulário pelo id
+    //Previne o comportamento padrao do formulario, ou seja, impede que ele seja enviado e recarregue a pagona
+    event.preventDefault();
+
+    //Captura os valores dos campos do formularios
+    const name = document.getElementById("nome").value;
     const cpf = document.getElementById("cpf").value;
     const email = document.getElementById("email").value;
     const password = document.getElementById("senha").value;
 
-    // requisição http para o endpoint de cadastro de usuário
-
+    //Requisição HTTP para o endpoint de cadastro de usuario
     fetch("http://localhost:5000/api/v1/user", {
-      // realiza uma chamada HTTP para o servidor (a rota definida)
+      //Realiza uma chamada http para o servidor(a rota definida)
       method: "POST",
       headers: {
-        // a requisição será em formato JSON
+        //A requisição será em formato json
         "Content-Type": "application/json",
       },
-      // transforma os dados do formulário em uma string json para serem enviados no corpo da requisição
-      body: JSON.stringify({ name, cpf, password, email }),
+      //Transforma os dados do formulario de uma string json para serem enviados no corpo da req
+      body: JSON.stringify({ name, cpf, email, password }),
     })
       .then((response) => {
-        // tratamento da resposta do servidor / api
+        //Tratamento da resposta do servidor / API
         if (response.ok) {
-          // verifica se a resposta foi bem-sucedida (status: 20*)
+          //verifica se a resposta foi bem sucedida (status 2xx(duzentos e alguma coisa))
           return response.json();
-        } // --- fechamento 'response.ok'
-        // convertendo o erro em formato JSON
+        }
+        //Convertendo o erro em formato JSON
         return response.json().then((err) => {
-          // mensagem retornada do servidor, acessa pela chave 'error'
+          //Mensagem retornada do servidor acessada pela chave "error"
           throw new Error(err.error);
-        }); // --- fechamento 'response error'
-      }) // --- fechamento 'response'
+        });
+      }) //Fechamento da then(response)
       .then((data) => {
-        // executa a resposta de sucesso  - retorna ao usuario final
-        // exibe alerta com o nome do usuario com o nome que acabou de ser cadastrado (front)
-        // alert("Usuário cadastrado com sucesso: " + data.user.name);
+        //executa a resposta de sucesso - retorna ao usuario final
 
+        //Exibe um alerta para o usuario final (front) com o nome que acabou de ser cadastrado
+        //alert("Usuário cadastrado com sucesso!");
         alert(data.message);
+        //Exibe o log no terminal
+        console.log("Usuario criado: ", data.user);
 
-        // alert("Usuário Cadastrado: " + data.user);
-
-        // exibe o log no terminal
-        console.log("Usuário Cadastrado: " + data.user);
-
-        // limpa os campos do formulario, após o sucesso do cadastro
-        document.getElementById("formulario-registro").reset()
-      }) // --- fechamento 'data'
-      //captura qualquer erro que ocorra durante o processo de requisição/ resposta
+        //Reseta os campos do formulario após o sucesso do cadastro
+        document.getElementById("formulario-registro").reset(); 
+      })
       .catch((error) => {
-        // exibe alerta no (front) com erro processado
-        alert("Erro no cadastro: " + error.message);
+        //Captura qualquer erro que ocorra durante o processo de requisição / resposta
+
+        //Exibe alerta (front) com o erro processado
+        alert("Erro no cadastro " + error.message);
         console.error("Erro:", error.message);
-      }); // --- fechamento 'catch(error)'
+      });
   });
