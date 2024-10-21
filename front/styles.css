@@ -114,4 +114,16 @@ footer {
   position: absolute; /* Posiciona o rodapé de forma absoluta */
   bottom: 0; /* Posiciona o rodapé na parte inferior da página */
 }
-
+#user-list{
+  background-color: rgb(67, 151, 204);
+  color: rgb(0, 0, 0);
+  flex: 1;
+  font-family:Georgia, 'Times New Roman', Times, serif;
+  border-radius: 10px;
+  bottom: 20px;
+  line-height: 180%;
+  list-style: none;
+  display:inline-block;
+  padding-left: 20px;
+  padding-right: 20px;
+}
