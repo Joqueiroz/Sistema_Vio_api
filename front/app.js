@@ -1,9 +1,12 @@
 // Chamada da função "createuser" para a associação ao evento de envio do formulario
-document.getElementById("formulario-registro").addEventListener
-("submit", createUser);
+document
+  .getElementById("formulario-registro")
+  .addEventListener("submit", createUser);
 
 document.addEventListener("DOMContentLoaded", getAllUsers);
+document.addEventListener("DOMContentLoaded", getAllorgsTable);
 
+document.addEventListener("DOMContentLoaded", getAllUsersTable);
 
 function createUser(event) {
   //Previne o comportamento padrao do formulario, ou seja, impede que ele seja enviado e recarregue a pagona
@@ -16,7 +19,7 @@ function createUser(event) {
   const password = document.getElementById("senha").value;
 
   //Requisição HTTP para o endpoint de cadastro de usuario
-  fetch("http://10.89.240.105:5000/api/v1/user", {
+  fetch("http://10.89.240.3:5000/api/v1/user", {
     //Realiza uma chamada http para o servidor(a rota definida)
     method: "POST",
     headers: {
@@ -59,7 +62,7 @@ function createUser(event) {
 }
 
 function getAllUsers() {
-  fetch("http://10.89.240.105:5000/api/v1/user", {
+  fetch("http://10.89.240.3:5000/api/v1/user", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -77,15 +80,98 @@ function getAllUsers() {
       const userList = document.getElementById("user-list");
       userList.innerHTML = " "; // Limpa a lista existente
 
-      data.users.forEach((user) =>{
-        const listItem = document.createElement ("li");
-        listItem.textContent = `Nome: ${user.name},CPF: ${user.cpf}, Email: ${user.email}`
+      data.users.forEach((user) => {
+        const listItem = document.createElement("li");
+        listItem.textContent = `Nome: ${user.name},CPF: ${user.cpf}, Email: ${user.email}`;
         userList.appendChild(listItem);
-      })
-
+      });
     })
-    .catch((error) =>{
+    .catch((error) => {
       alert("Erro ao obter usuarios" + error.message);
       console.error("Erro:", error.message);
+    });
+}
+
+function getAllUsersTable(){
+  fetch("http://10.89.240.3:5000/api/v1/user", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return response.json().then((err) => {
+        throw new Error(err.error);
+      });
     })
+    .then((data) => {
+      const userList = document.getElementById("user-list-tabela");
+      userList.innerHTML = ""; //Limpa a lista antes de adicionar novos itens
+      data.users.forEach((usuario) => { //Verifica se há usuarios retornados e os adiciona á tabela
+      const tr = document.createElement("tr");//Cria uma nova linha
+      const tdName = document.createElement("td");//Cria celulas para nome, CPF e e-mail
+      tdName.textContent = usuario.name;
+      tr.appendChild(tdName);
+
+      const tdcpf = document.createElement("td");//Cria celulas para nome, CPF e e-mail
+      tdcpf.textContent = usuario.cpf;
+      tr.appendChild(tdcpf);
+
+      const tdemail = document.createElement("td");//Cria celulas para nome, CPF e e-mail
+      tdemail.textContent = usuario.email;
+      tr.appendChild(tdemail);
+
+      userList.appendChild(tr); //Adiciona a linha á tabela  
+
+      });
+    })
+    .catch((error) => {
+      alert("Erro ao obter usuarios: " + error.message);
+      console.error("Erro: ", error.message)
+    });
+}
+
+function getAllorgsTable(){
+  fetch("http://10.89.240.3:5000/api/v1/organizador", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((response) => {
+      if (response.ok) {
+        return response.json();
+      }
+      return response.json().then((err) => {
+        throw new Error(err.error);
+      });
+    })
+    .then((data) => {
+      const orgList = document.getElementById("org-list-tabela");
+      orgList.innerHTML = ""; //Limpa a lista antes de adicionar novos itens
+      data.organizadores.forEach((organizador) => { //Verifica se há usuarios retornados e os adiciona á tabela
+      const tr = document.createElement("tr");//Cria uma nova linha
+      const tdNome = document.createElement("td");//Cria celulas para nome, CPF e e-mail
+      tdNome.textContent = organizador.nome;
+      tr.appendChild(tdNome);
+
+      const tdtelefone = document.createElement("td");//Cria celulas para nome, CPF e e-mail
+      tdtelefone.textContent = organizador.telefone;
+      tr.appendChild(tdtelefone);
+
+      const tde_mail = document.createElement("td");//Cria celulas para nome, CPF e e-mail
+      tde_mail.textContent = organizador.email;
+      tr.appendChild(tde_mail);
+
+      orgList.appendChild(tr); //Adiciona a linha á tabela  
+
+      });
+    })
+    .catch((error) => {
+      alert("Erro ao obter organizadores: " + error.message);
+      console.error("Erro: ", error.message)
+    });
 }
