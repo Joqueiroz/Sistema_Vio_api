@@ -3,7 +3,7 @@ const router = require("express").Router();
 const userController = require("../controllers/userController");
 const orgController = require("../controllers/orgController");
 const eventoController = require("../controllers/eventoController");
-const ingressoController = require("../controllers/ingressoController");
+const ingressosController = require("../controllers/ingressosController");
 
 router.post("/user", userController.createUser);
 router.get("/user", userController.getAllUsers);
@@ -21,10 +21,9 @@ router.get("/evento", eventoController.getallEventos);
 router.put("/evento", eventoController.updateEventos);
 router.delete("/evento/:id_evento", eventoController.deleteEvento);
 
-router.post("/ingresso", ingressoController.createIngresso);
-router.get("/ingresso", ingressoController.getAllIngressos);
-router.put("/ingresso", ingressoController.updateIngresso);
-router.delete("/ingresso/:id_ingresso", ingressoController.deleteIngresso);
-
+router.post("/ingresso", ingressosController.createIngresso);
+router.get("/ingresso", ingressosController.getAllIngressos);
+router.put("/ingresso", ingressosController.updateIngresso);
+router.delete("/ingresso/:id_ingresso", ingressosController.deleteIngresso);
 
 module.exports = router;
