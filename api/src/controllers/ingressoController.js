@@ -1,7 +1,7 @@
 const connect = require("../db/connect");
 
 module.exports = class ingressoController {
-  // Criação de um ingresso
+  // Criação de um ingressos
   static async createIngresso(req, res) {
     const { preco, tipo, fk_id_evento } = req.body;
 
