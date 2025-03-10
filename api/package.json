@@ -1,13 +1,13 @@
 {
-  "name": "vio",
+  "name": "backend",
   "version": "1.0.0",
-  "description": "criando um crud de usuarios",
+  "description": "Criando um Crud de usuarios ",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node src/server.js"
   },
-  "author": "vinicius",
+  "author": "Maria Fernanda Campos Cintra",
   "license": "ISC",
   "dependencies": {
     "axios": "^1.7.7",
