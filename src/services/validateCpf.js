@@ -1,21 +1,20 @@
-const connect = require ("../db/connect")
+const connect = require('../db/connect');
 
 module.exports = async function validateCpf(cpf, userId){
-
-    const query = "SELECT id_usuario from usuario where cpf = ?"
+    const query = "SELECT id_usuario FROM usuario WHERE cpf=?";
     const values = [cpf];
 
-    connect.query(query, values, (err, results)=>{
-        if (err){
-            // fazer algo
+    connect.query(query, values, (err, results) => {
+        if(err){
+            //Fazer algo
         }
-        else if (results.length > 0){
-            const idDocpfCadastrado = results [0].id_usuario;
+        else if(results.length > 0){
+            const id_cpfCadastrado = results[0].id_usuario;
 
-            if(userId && idDocpfCadastrado !== userId){
-                return {error: "CPF ja cadastrado para outro usuario"}
-            }else if (!userId){
-                return {error:"CPF ja cadastrado"}
+            if(userId && id_cpfCadastrado != userId){
+                return {error:"CPF já cadstrado para outro usuário!!"}
+            }else if(!userId){
+                return {error: "CPF já cadastrado!!"}
             }
         }
         else{
