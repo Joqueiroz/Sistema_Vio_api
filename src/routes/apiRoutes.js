@@ -1,12 +1,12 @@
 const router = require('express').Router()
-
 const organizadorController = require('../controllers/organizadorController');
 const userController = require("../controllers/userController")
 const eventoController = require("../controllers/eventoController");
 const ingressoController = require('../controllers/ingressoController');
+const verifyJWT = require('../services/verifyJWT');
 
 router.post("/user", userController.createUser);
-router.get("/user", userController.getAllUsers);
+router.get("/user",verifyJWT, userController.getAllUsers);
 router.put("/user", userController.updateUser);
 router.delete("/user/:id", userController.deleteUser);
 router.post("/login", userController.loginUser);
