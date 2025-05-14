@@ -174,7 +174,7 @@ static async updateUser(req, res) {
           return res.status(403).json({error:"Senha incorreta!"})
         }
 
-        const token = jwt.sign({id: user.id_usuario}, process.env.SECRET, {expiresIn:"1m"});
+        const token = jwt.sign({id: user.id_usuario}, process.env.SECRET, {expiresIn:"1h"});
 
         //Remove um atributo de um objeto
         delete user.password;
