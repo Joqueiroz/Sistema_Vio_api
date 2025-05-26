@@ -26,7 +26,7 @@ DROP TABLE IF EXISTS `compra`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `compra` (
   `id_compra` int NOT NULL AUTO_INCREMENT,
-  `data_compra` datetime NOT NULL,
+  `data_compra` datetime DEFAULT CURRENT_TIMESTAMP,
   `fk_id_usuario` int NOT NULL,
   PRIMARY KEY (`id_compra`),
   KEY `fk_id_usuario` (`fk_id_usuario`),
@@ -40,9 +40,27 @@ CREATE TABLE `compra` (
 
 LOCK TABLES `compra` WRITE;
 /*!40000 ALTER TABLE `compra` DISABLE KEYS */;
-INSERT INTO `compra` VALUES (1,'2024-11-14 19:04:00',1),(2,'2024-11-13 17:00:00',1),(3,'2024-11-12 15:30:00',2),(4,'2024-11-11 14:20:00',2);
+INSERT INTO `compra` VALUES (1,'2024-11-14 19:04:00',1),(2,'2024-11-13 17:00:00',1),(3,'2024-11-12 15:30:00',2);
 /*!40000 ALTER TABLE `compra` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`alunods`@`%`*/ /*!50003 TRIGGER `trg_after_delete_compra` AFTER DELETE ON `compra` FOR EACH ROW BEGIN 
+    INSERT INTO historico_compra (id_compra, data_compra, id_usuario)
+    VALUES (OLD.id_compra, OLD.data_compra, OLD.fk_id_usuario);
+END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `evento`
@@ -61,7 +79,7 @@ CREATE TABLE `evento` (
   PRIMARY KEY (`id_evento`),
   KEY `fk_id_organizador` (`fk_id_organizador`),
   CONSTRAINT `evento_ibfk_1` FOREIGN KEY (`fk_id_organizador`) REFERENCES `organizador` (`id_organizador`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -70,7 +88,7 @@ CREATE TABLE `evento` (
 
 LOCK TABLES `evento` WRITE;
 /*!40000 ALTER TABLE `evento` DISABLE KEYS */;
-INSERT INTO `evento` VALUES (1,'Festival de Verão','evento de verao','2024-12-15 00:00:00','Praia Central',1),(2,'Congresso de Tecnologia','Evento de tecnologia','2024-11-20 00:00:00','Centro de convencoes',2),(3,'Show Internacional','Evento internacional','2024-10-30 00:00:00','Arena Principal',3);
+INSERT INTO `evento` VALUES (1,'Festival de Verão','evento de verao','2024-12-15 00:00:00','Praia Central',1),(2,'Congresso de Tecnologia','Evento de tecnologia','2024-11-20 00:00:00','Centro de convencoes',2),(3,'Show Internacional','Evento internacional','2024-10-30 00:00:00','Arena Principal',3),(4,'ss','bom','2025-12-12 18:00:00','franca',1);
 /*!40000 ALTER TABLE `evento` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -93,6 +111,33 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+
+--
+-- Table structure for table `historico_compra`
+--
+
+DROP TABLE IF EXISTS `historico_compra`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `historico_compra` (
+  `id_historico` int NOT NULL AUTO_INCREMENT,
+  `id_compra` int NOT NULL,
+  `data_compra` datetime NOT NULL,
+  `id_usuario` int NOT NULL,
+  `data_exclusao` datetime DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id_historico`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `historico_compra`
+--
+
+LOCK TABLES `historico_compra` WRITE;
+/*!40000 ALTER TABLE `historico_compra` DISABLE KEYS */;
+INSERT INTO `historico_compra` VALUES (1,4,'2024-11-11 14:20:00',2,'2025-05-26 09:12:06');
+/*!40000 ALTER TABLE `historico_compra` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `ingresso`
@@ -139,7 +184,7 @@ CREATE TABLE `ingresso_compra` (
   KEY `fk_id_compra` (`fk_id_compra`),
   CONSTRAINT `ingresso_compra_ibfk_1` FOREIGN KEY (`fk_id_ingresso`) REFERENCES `ingresso` (`id_ingresso`),
   CONSTRAINT `ingresso_compra_ibfk_2` FOREIGN KEY (`fk_id_compra`) REFERENCES `compra` (`id_compra`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -148,7 +193,7 @@ CREATE TABLE `ingresso_compra` (
 
 LOCK TABLES `ingresso_compra` WRITE;
 /*!40000 ALTER TABLE `ingresso_compra` DISABLE KEYS */;
-INSERT INTO `ingresso_compra` VALUES (1,5,4,1),(2,2,5,1),(3,1,1,2),(4,2,2,2);
+INSERT INTO `ingresso_compra` VALUES (1,5,4,1),(2,2,5,1),(3,1,1,2),(4,2,2,2),(5,3,3,1),(6,2,2,2),(7,2,2,2),(8,12,2,2),(9,12,2,2),(10,12,2,2),(11,12,2,2),(12,12,2,2),(13,12,3,3),(17,12,4,3),(20,12,5,3),(21,12,3,3);
 /*!40000 ALTER TABLE `ingresso_compra` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
@@ -160,20 +205,29 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-/*!50003 CREATE*/ /*!50017 DEFINER=`alunods`@`%`*/ /*!50003 TRIGGER `verifica_data_evento` BEFORE INSERT ON `ingresso_compra` FOR EACH ROW begin 
-    declare data_evento datetime;
-    
-    -- buscar data do evento
-    select e.data_hora into data_evento 
-    from ingresso i join evento e on i.fk_id_evento = e.id_evento
-    where i.id_ingresso = new.fk_id_ingresso;
+/*!50003 CREATE*/ /*!50017 DEFINER=`alunods`@`%`*/ /*!50003 TRIGGER `atualizar_total_ingressos` AFTER INSERT ON `ingresso_compra` FOR EACH ROW BEGIN
+    DECLARE v_id_evento INT;
 
-    -- Verificar se o evento já ocorreu 
-    if date(data_evento) < CURDATE() then
-        signal sqlstate '45000'
-        set message_text = 'Não é possivel comprar ingresso para eventos passados.';
-    end if;
-end */;;
+    -- 1. Descobre o id_evento a partir do ingresso comprado
+    SELECT fk_id_evento
+    INTO v_id_evento
+    FROM ingresso
+    WHERE id_ingresso = NEW.fk_id_ingresso;
+
+    -- 2. Verifica se já existe um registro para esse evento
+    IF EXISTS (
+        SELECT 1 FROM resumo_evento WHERE id_evento = v_id_evento
+    ) THEN
+        -- 3. Se existe, atualiza somando a quantidade comprada
+        UPDATE resumo_evento
+        SET total_ingressos = total_ingressos + NEW.quantidade
+        WHERE id_evento = v_id_evento;
+    ELSE
+        -- 4. Se não existe, insere novo registro com a quantidade inicial
+        INSERT INTO resumo_evento (id_evento, total_ingressos)
+        VALUES (v_id_evento, NEW.quantidade);
+    END IF;
+END */;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -239,6 +293,89 @@ INSERT INTO `presenca` VALUES (1,'2025-05-14 07:53:32',1,1);
 UNLOCK TABLES;
 
 --
+-- Table structure for table `reservas`
+--
+
+DROP TABLE IF EXISTS `reservas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `reservas` (
+  `id_reserva` int NOT NULL AUTO_INCREMENT,
+  `fkid_usuario` int NOT NULL,
+  `fkid_salas` int NOT NULL,
+  `data_reserva` date NOT NULL,
+  `horario_inicio` time NOT NULL,
+  `horario_fim` time NOT NULL,
+  PRIMARY KEY (`id_reserva`),
+  KEY `idx_reserva_sala_data` (`fkid_salas`,`data_reserva`),
+  KEY `idx_reserva_usuario` (`fkid_usuario`),
+  CONSTRAINT `reservas_ibfk_1` FOREIGN KEY (`fkid_usuario`) REFERENCES `usuario` (`id_usuario`),
+  CONSTRAINT `reservas_ibfk_2` FOREIGN KEY (`fkid_salas`) REFERENCES `salas` (`id_salas`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `reservas`
+--
+
+LOCK TABLES `reservas` WRITE;
+/*!40000 ALTER TABLE `reservas` DISABLE KEYS */;
+INSERT INTO `reservas` VALUES (1,5,20,'2026-03-28','19:00:00','20:00:00'),(2,1,10,'2026-03-28','19:00:00','20:00:00'),(3,3,10,'2026-03-28','14:00:00','15:00:00'),(4,3,12,'2026-03-28','14:00:00','15:00:00'),(5,1,15,'2026-03-28','14:00:00','15:00:00'),(6,1,5,'2026-03-28','14:00:00','15:00:00'),(7,5,5,'2026-03-28','19:00:00','20:00:00'),(8,5,5,'2025-04-28','19:00:00','20:00:00');
+/*!40000 ALTER TABLE `reservas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `resumo_evento`
+--
+
+DROP TABLE IF EXISTS `resumo_evento`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `resumo_evento` (
+  `id_evento` int NOT NULL,
+  `total_ingressos` int NOT NULL,
+  PRIMARY KEY (`id_evento`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `resumo_evento`
+--
+
+LOCK TABLES `resumo_evento` WRITE;
+/*!40000 ALTER TABLE `resumo_evento` DISABLE KEYS */;
+INSERT INTO `resumo_evento` VALUES (1,18),(2,25),(3,24);
+/*!40000 ALTER TABLE `resumo_evento` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `salas`
+--
+
+DROP TABLE IF EXISTS `salas`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `salas` (
+  `id_salas` int NOT NULL AUTO_INCREMENT,
+  `nome_da_sala` varchar(255) NOT NULL,
+  `capacidade` int NOT NULL,
+  `localizacao` varchar(255) NOT NULL,
+  `equipamentos` varchar(255) NOT NULL,
+  PRIMARY KEY (`id_salas`)
+) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `salas`
+--
+
+LOCK TABLES `salas` WRITE;
+/*!40000 ALTER TABLE `salas` DISABLE KEYS */;
+INSERT INTO `salas` VALUES (1,'A1',16,'Bloco A','Projetores, Lousa, Cadeiras'),(2,'A2',16,'Bloco A','Computadores, Cadeiras, Lousa'),(3,'A3',16,'Bloco A','Simuladores, Lousa, Cadeiras'),(4,'A4',20,'Bloco A','Projetores, Cadeiras, Ar-condicionado'),(5,'A5',16,'Bloco A','Projetores, Lousa, Cadeiras'),(6,'A6',20,'Bloco A','Máquinas Pneumáticas, Lousa, Cadeiras'),(7,'COEL',16,'Bloco B','Ferramentas Elétricas, Lousa'),(8,'ITEL1',16,'Bloco B','Computadores, Cadeiras, Lousa'),(9,'ITEL2',16,'Bloco B','Computadores, Lousa, Cadeiras'),(10,'TOR',20,'Bloco B','Máquinas de Tornearia, Lousa'),(11,'AJFR',16,'Bloco B','Fresadoras, Lousa'),(12,'CNC',16,'Bloco C','Máquinas CNC, Lousa'),(13,'MMC',16,'Bloco C','Ferramentas de Manutenção, Lousa'),(14,'SOLD',16,'Bloco C','Equipamentos de Soldagem, Lousa'),(15,'B2',32,'Bloco B','Cadeiras, Projetores'),(16,'B3',32,'Bloco B','Cadeiras, Projetores'),(17,'B5',40,'Bloco B','Cadeiras, Projetores, Computadores'),(18,'B6',32,'Bloco B','Cadeiras, Projetores'),(19,'B7',32,'Bloco B','Cadeiras, Projetores'),(20,'B8',20,'Bloco B','Computadores, Lousa');
+/*!40000 ALTER TABLE `salas` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `usuario`
 --
 
@@ -247,15 +384,14 @@ DROP TABLE IF EXISTS `usuario`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `usuario` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) NOT NULL,
-  `email` varchar(100) NOT NULL,
-  `password` varchar(50) NOT NULL,
   `cpf` char(11) NOT NULL,
-  `data_nascimento` date NOT NULL,
+  `nome` varchar(255) NOT NULL,
+  `telefone` char(11) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `senha` varchar(20) NOT NULL,
   PRIMARY KEY (`id_usuario`),
-  UNIQUE KEY `email` (`email`),
   UNIQUE KEY `cpf` (`cpf`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -264,9 +400,29 @@ CREATE TABLE `usuario` (
 
 LOCK TABLES `usuario` WRITE;
 /*!40000 ALTER TABLE `usuario` DISABLE KEYS */;
-INSERT INTO `usuario` VALUES (1,'João Silva','joao.silva@example.com','senha123','16123456789','1990-01-15'),(2,'Maria Oliveira','maria.oliveira@example.com','senha123','16987654321','1985-06-23'),(3,'Carlos Pereira','carlos.pereira@example.com','senha123','16123987456','1992-11-30'),(4,'Ana Souza','ana.souza@example.com','senha123','16456123789','1987-04-18'),(5,'Pedro Costa','pedro.costa@example.com','senha123','16789123456','1995-08-22'),(6,'Laura Lima','laura.lima@example.com','senha123','16321654987','1998-09-09'),(7,'Lucas Alves','lucas.alves@example.com','senha123','16654321987','1993-12-01'),(8,'Fernanda Rocha','fernanda.rocha@example.com','senha123','16741852963','1991-07-07'),(9,'Rafael Martins','rafael.martins@example.com','senha123','16369258147','1994-03-27'),(10,'Juliana Nunes','juliana.nunes@example.com','senha123','16258147369','1986-05-15'),(11,'Paulo Araujo','paulo.araujo@example.com','senha123','16159753486','1997-10-12'),(12,'Beatriz Melo','beatriz.melo@example.com','senha123','16486159753','1990-02-28'),(13,'Renato Dias','renato.dias@example.com','senha123','16753486159','1996-11-11'),(14,'Camila Ribeiro','camila.ribeiro@example.com','senha123','16963852741','1989-08-03'),(15,'Thiago Teixeira','thiago.teixeira@example.com','senha123','16852741963','1992-12-24'),(16,'Patrícia Fernandes','patricia.fernandes@example.com','senha123','16741963852','1991-01-10'),(17,'Rodrigo Gomes','rodrigo.gomes@example.com','senha123','16963741852','1987-06-30'),(18,'Mariana Batista','mariana.batista@example.com','senha123','16147258369','1998-09-22'),(19,'Fábio Freitas','fabio.freitas@example.com','senha123','16369147258','1994-04-16'),(20,'Isabela Cardoso','isabela.cardoso@example.com','senha123','16258369147','1985-11-08');
+INSERT INTO `usuario` VALUES (1,'12345678901','joao da silva','11987654321','joao.silva@email.com','senha123'),(2,'23456789012','Maria Oliveira','11976543210','maria.oliveira@email.com','senha456'),(3,'34567890123','Carlos Santos','11965432109','carlos.santos@email.com','senha789'),(4,'45678901234','Ana Souza','11954321098','ana.souza@email.com','senha321'),(5,'56789012345','Pedro Lima','11943210987','pedro.lima@email.com','senha654'),(6,'12345678909','a','12345678909','a@a','123');
 /*!40000 ALTER TABLE `usuario` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`alunods`@`%`*/ /*!50003 TRIGGER `impedir_alteracao_cpf` BEFORE UPDATE ON `usuario` FOR EACH ROW begin   
+    if old.cpf <> new.cpf then
+        signal sqlstate "45000"
+        set message_text = "Não é permitido alterar o cpf de um usuario ja cadastrado";
+    end if;
+end */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Dumping events for database 'vio_joao'
@@ -501,6 +657,92 @@ DELIMITER ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
 /*!50003 SET character_set_results = @saved_cs_results */ ;
 /*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP FUNCTION IF EXISTS `total_reservas_por_sala` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`alunods`@`%` FUNCTION `total_reservas_por_sala`(idSala INT) RETURNS int
+    READS SQL DATA
+    DETERMINISTIC
+BEGIN
+    DECLARE total INT;
+
+    SELECT COUNT(*) INTO total
+    FROM reservas
+    WHERE fkid_salas = idSala;
+
+    RETURN total;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ListarReservasPorData` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`alunods`@`%` PROCEDURE `ListarReservasPorData`(IN p_data DATE)
+BEGIN
+  SELECT 
+  r.id_reserva, 
+  u.nome, 
+  s.nome_da_sala as "Sala Reservada", 
+  r.horario_inicio,     
+  r.horario_fim
+  FROM reservas r
+  JOIN usuario u ON r.fkid_usuario = u.id_usuario
+  JOIN salas s ON r.fkid_salas = s.id_salas
+  WHERE r.data_reserva = p_data
+  ORDER BY u.nome, s.nome_da_sala;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `ListarReservasPorUsuario` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_0900_ai_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `ListarReservasPorUsuario`(IN p_id_usuario INT)
+BEGIN
+  SELECT
+    r.id_reserva,
+    u.nome,
+    s.nome_da_sala ,
+    r.data_reserva,
+    r.horario_inicio,
+    r.horario_fim
+  FROM reservas r
+  JOIN usuario u ON r.fkid_usuario = u.id_usuario
+  JOIN salas s ON r.fkid_salas = s.id_salas
+  WHERE r.fkid_usuario = p_id_usuario
+  ORDER BY r.data_reserva, r.horario_inicio;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 /*!50003 DROP PROCEDURE IF EXISTS `registrar_compra` */;
 /*!50003 SET @saved_cs_client      = @@character_set_client */ ;
 /*!50003 SET @saved_cs_results     = @@character_set_results */ ;
@@ -639,4 +881,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-05-14  7:55:19
+-- Dump completed on 2025-05-26 10:28:56
