@@ -1,5 +1,9 @@
-DELIMITER //
+    CREATE TABLE resumo_evento (
+        id_evento INT PRIMARY KEY,
+        total_ingressos INT
+    );
 
+DELIMITER //
 CREATE TRIGGER atualizar_total_ingressos
 AFTER INSERT ON ingresso_compra
 FOR EACH ROW
@@ -21,7 +25,7 @@ BEGIN
         INSERT INTO resumo_evento (id_evento, total_ingressos)
         VALUES (v_id_evento, NEW.quantidade);
     END IF;
-END;
-//
-
+END; //
 DELIMITER ;
+
+-- IP:  

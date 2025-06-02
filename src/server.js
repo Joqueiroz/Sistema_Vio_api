@@ -2,19 +2,16 @@
 const app = require("./index");
 const cors = require('cors');
 
-//configuração do cors com origens permitidas
+//Configuração do CORS com origens permitidas
 const corsOptions = {
-    origin: '*', //substitua pela origem permitida
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', //metodos http permitidos 
-    crendentials: true, //permite o uso de cookies e credenciais 
-    optionsSucessStatus: 204, //define o statusde resposta para o metodo OPTIONS
+    origin: '*', //Substitua pela origem permitida
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE', //Métodos HTTP permitidos
+    credentials: true, //Permite o uso de cookies e credenciais
+    optionSuccessStatus: 204, //Define o status de resposta para o método OPTIONS
 };
 
-//Inicia o servidor na porta 5000, tornando a API acessível em http://localhost:5000
+//Configuração do CORS com origens permitidas
 app.use(cors(corsOptions));
+
+//Inicia o servidor na porta 5000, tornando a API acessível em http://localhost:5000/api/v1/
 app.listen(5000);
-
-
-// http://localhost:5000/api/v1/user
-
-//http://localhost:5000/api/v1//organizador

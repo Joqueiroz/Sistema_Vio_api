@@ -1,0 +1,49 @@
+create user 'mateus2'@'localhost' identified by 'senha123';
+
+\connect mateus2@localhost:3306
+
+grant process on *.* to 'mateus2'@'localhost';
+
+grant usage on vio_mateus.* to 'mateus2'@'localhost';
+
+grant create, alter, drop on vio_mateus.* to 'mateus2'@'localhost';
+
+create table exemplo (id int);
+drop table exemplo;
+insert into exemplo (id) values (1);
+
+revoke create on vio_mateus.* from 'mateus2'@'localhost';
+
+grant select on vio_mateus.usuario to 'mateus2'@'localhost';
+
+grant insert (name) on vio_mateus.usuario to 'mateus2'@'localhost';
+
+insert into vio_mateus.usuario (name) values ('Novo nome');
+
+revoke insert (name) on vio_mateus.usuario from 'mateus2'@'10.89.240.86';
+
+grant update on vio_mateus.organizador to 'mateus2'@'10.89.240.86';
+
+grant select(id_organizador) on vio_mateus.organizador to 'mateus2'@'10.89.240.86';
+
+update vio_mateus.organizador set nome = 'Organização ABC' where id_organizador = 1;
+
+revoke all privileges on vio_mateus.* from 'mateus2'@'10.89.240.86';
+
+--------------------------ip-----------------------------------
+create user 'mateus2'@'10.89.240.86' identified by 'senha123';
+\connect mateus2@10.89.240.86:3306
+
+grant process on *.* to 'mateus2'@'10.89.240.86';
+
+grant usage on vio_mateus.* to 'mateus2'@'10.89.240.86';
+
+grant create, alter, drop on vio_mateus.* to 'mateus2'@'10.89.240.86';
+
+revoke create on vio_mateus.* from 'mateus2'@'10.89.240.86';
+
+grant select on vio_mateus.usuario to 'mateus2'@'10.89.240.86';
+
+grant insert (name) on vio_mateus.usuario to 'mateus2'@'10.89.240.86';
+
+revoke insert (name) on vio_mateus.usuario from 'mateus2'@'10.89.240.86';
