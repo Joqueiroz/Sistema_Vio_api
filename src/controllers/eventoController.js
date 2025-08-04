@@ -4,6 +4,7 @@ module.exports = class eventoController {
   //criação de um evento
   static async createEvento(req, res) {
     const { nome, descricao, data_hora, local, fk_id_organizador } = req.body;
+    const imagem = req.file?.buffer || null;
 
     //Validação generica de todos atributos
     if (!nome || !descricao || !data_hora || !local || !fk_id_organizador) {
@@ -12,8 +13,8 @@ module.exports = class eventoController {
         .json({ error: "Todos os campos devem ser preenchidos" });
     }
     const query = `insert into evento 
-    (nome, descricao, data_hora, local, fk_id_organizador) values(?,?,?,?,?)`;
-    const values = [nome, descricao, data_hora, local, fk_id_organizador];
+    (nome, descricao, data_hora, local, fk_id_organizador, imagem) values(?,?,?,?,?,?)`;
+    const values = [nome, descricao, data_hora, local, fk_id_organizador, imagem];
     try{
         connect.query(query, values, (err) =>{
             if(err){
@@ -46,7 +47,7 @@ static async getAllEventos(req, res){
         console.error("Erro ao executar a consulta", error)
         return res.status(500).json({error: "Erro interno do Servidor",})
     }
-}//Fim do GetAllEventos
+}
 
 //Atualiza um evento
 static async updateEvento(req, res) {
@@ -173,4 +174,17 @@ static async updateEvento(req, res) {
       return res.status(500).json({ error: "Erro interno do Servidor" });
     }
   } 
+
+  static async getImagemEvento (req, res){
+    const id = req.params.id;
+
+    const query = "SELECT imagem FROM evento WHERE id_evento=?";
+    connect.query (query, [id], (err,results)=>{
+      if (err || results.length === 0 || !results[0].imagem){
+        return res.status(404).send ("Imagem não foi encontrada");
+      }
+      res.set ("content-Type", "image/png");
+      return res.send(results[0].imagem);
+    })
+  }
 };

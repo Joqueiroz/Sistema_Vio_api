@@ -1,6 +1,6 @@
 const router = require('express').Router()
 const verifyJMT = require('../services/verifyJMT');
-
+const upload = require ("../services/upload");
 const userController = require("../controllers/userController");
 const orgController = require("../controllers/orgController");
 const eventoController = require('../controllers/eventoController');
@@ -22,7 +22,7 @@ router.put('/organizador', orgController.updateOrganizador);
 router.delete('/organizador/:id', orgController.deleteOrganizador);
 
 //Rotas eventoController
-router.post('/evento', eventoController.createEvento);
+router.post('/evento', upload.single ("imagem"), eventoController.createEvento);
 router.get('/evento',verifyJMT, eventoController.getAllEventos);
 router.put('/evento', eventoController.updateEvento);
 router.delete('/evento/:id', eventoController.deleteEvento);
