@@ -71,6 +71,7 @@ DROP TABLE IF EXISTS `evento`;
 CREATE TABLE `evento` (
   `id_evento` int NOT NULL AUTO_INCREMENT,
   `nome` varchar(100) NOT NULL,
+   `imagem_tipo` VARCHAR(100) ,
   `descricao` varchar(255) NOT NULL,
   `data_hora` datetime NOT NULL,
   `local` varchar(255) NOT NULL,

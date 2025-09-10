@@ -23,7 +23,8 @@ router.delete('/organizador/:id', orgController.deleteOrganizador);
 
 //Rotas eventoController
 router.post('/evento', upload.single ("imagem"), eventoController.createEvento);
-router.get('/evento',verifyJMT, eventoController.getAllEventos);
+router.get('/evento', eventoController.getAllEventos);
+router.get("/evento/imagem/:id", eventoController.getImagemEvento);
 router.put('/evento', eventoController.updateEvento);
 router.delete('/evento/:id', eventoController.deleteEvento);
 //Rotas para manipular data

@@ -5,31 +5,32 @@ module.exports = class eventoController {
   static async createEvento(req, res) {
     const { nome, descricao, data_hora, local, fk_id_organizador } = req.body;
     const imagem = req.file?.buffer || null;
-
-    //Validação generica de todos atributos
+    const imagem_tipo = req.file?.mimetype || null;
+  
     if (!nome || !descricao || !data_hora || !local || !fk_id_organizador) {
-      return res
-        .status(400)
-        .json({ error: "Todos os campos devem ser preenchidos" });
+      return res.status(400).json({ error: "Todos os campos devem ser preenchidos" });
     }
-    const query = `insert into evento 
-    (nome, descricao, data_hora, local, fk_id_organizador, imagem) values(?,?,?,?,?,?)`;
-    const values = [nome, descricao, data_hora, local, fk_id_organizador, imagem];
-    try{
-        connect.query(query, values, (err) =>{
-            if(err){
-                console.log(err);
-                return res.status(500).json({error: "Erro ao criar o evento!"});
-            }
-            else{
-                return res.status(201).json({message: "Evento criado com Sucesso!"})
-            }
-        })
-    }catch(error){
-        console.log("Erro ao executar consulta: ", error);
-        return res.status(500).json({eror: "Erro interno do servidor!"});
+  
+    const query = `
+      INSERT INTO evento (nome, descricao, data_hora, local, fk_id_organizador, imagem, imagem_tipo)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+    `;
+    const values = [nome, descricao, data_hora, local, fk_id_organizador, imagem, imagem_tipo];
+  
+    try {
+      connect.query(query, values, (err) => {
+        if (err) {
+          console.error(err);
+          return res.status(500).json({ error: "Erro ao criar o evento" });
+        }
+        res.status(201).json({ message: "Evento criado com sucesso" });
+      });
+    } catch (error) {
+      console.error("Erro ao executar a consulta:", error);
+      res.status(500).json({ error: "Erro interno do servidor" });
     }
-  }//Fim do create  
+  }
+  //Fim do create  
 
 //Visualizar todos os eventos
 static async getAllEventos(req, res){
